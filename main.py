@@ -1,38 +1,58 @@
-import time
 import settings
 import gameoflife as gol
+import pygame, sys
 
 
-def makeBoardOutput(board):
-    board_str = ""
+def drawCell(x, y, cell):
+    x_pixel = x * settings.CELL_SIZE
+    y_pixel = y * settings.CELL_SIZE
+    pygame.draw.rect(
+        screen,
+        settings.ALIVE_COLOR if cell else settings.DEAD_COLOR,
+        pygame.Rect(x_pixel, y_pixel, settings.CELL_SIZE, settings.CELL_SIZE),
+    )
+
+    pygame.draw.rect(
+        screen,
+        settings.BORDER_COLOR,
+        pygame.Rect(x_pixel, y_pixel, settings.CELL_SIZE, settings.CELL_SIZE),
+        settings.BORDER_WIDTH,
+    )
+
+
+def drawBoard(board):
     for row in range(len(board)):
         for column in range(len(board[row])):
-            board_str += board[row][column]
-        board_str += "\n"
-
-    return board_str
+            drawCell(column, row, board[row][column])
 
 
 if __name__ == "__main__":
 
-    world = []
     board = gol.initBoard()
 
     # Glider
-    board[0][1] = settings.LIVE_CELL
-    board[1][2] = settings.LIVE_CELL
-    board[2][0] = settings.LIVE_CELL
-    board[2][1] = settings.LIVE_CELL
-    board[2][2] = settings.LIVE_CELL
+    board[0][1] = True
+    board[1][2] = True
+    board[2][0] = True
+    board[2][1] = True
+    board[2][2] = True
 
-    # 1. Print board
+    # 1. Draw board
     # 2. Go over old board cells:
     # 3.    Make decision for each cell and write to new board
     # 4. Replace old board with new
     # 5. Repeat forever
 
+    pygame.init()
+
+    screen = pygame.display.set_mode(settings.SCREEN_SIZE)
+
     while True:
-        print(makeBoardOutput(board))
-        newBoard = gol.makeNextBoard(board)
-        board = newBoard
-        time.sleep(1 / settings.FRAME_RATE)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+
+        drawBoard(board)
+        board = gol.makeNextBoard(board)
+        pygame.time.delay(int(1 / settings.FRAME_RATE * 1000))
+        pygame.display.flip()

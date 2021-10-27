@@ -3,10 +3,10 @@ import settings
 
 def initBoard():
     new_board = []
-    for _ in range(settings.BOARD_SIZE_VERTICAL):
+    for _ in range(settings.BOARD_HEIGHT):
         new_row = []
-        for _ in range(settings.BOARD_SIZE_HORIZONTAL):
-            new_row.append(settings.DEAD_CELL)
+        for _ in range(settings.BOARD_WIDTH):
+            new_row.append(False)
         new_board.append(new_row)
 
     return new_board
@@ -27,7 +27,7 @@ def _get_number_of_neighbors(board, row, column):
                 i = clipToBoard(i, len(board))
                 j = clipToBoard(j, len(board[0]))
 
-                if board[i][j] == settings.LIVE_CELL:
+                if board[i][j] == True:
                     number_of_neighbors += 1
 
     return number_of_neighbors
@@ -48,9 +48,9 @@ def _get_number_of_neighbors(board, row, column):
 def _decideFateForCell(board, row, column):
     number_of_neighbors = _get_number_of_neighbors(board, row, column)
     if number_of_neighbors < 2 or 3 < number_of_neighbors:
-        return settings.DEAD_CELL
+        return False
     elif number_of_neighbors == 3:
-        return settings.LIVE_CELL
+        return True
     else:
         return board[row][column]
 
