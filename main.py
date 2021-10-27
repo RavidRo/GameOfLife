@@ -71,7 +71,8 @@ if __name__ == "__main__":
                 x, y = screen_to_board_position(mouse_pos)
                 board[y][x] = not board[y][x]
                 draw_cell(x, y, board[y][x])
-                pygame.display.flip()
+                if paused:
+                    pygame.display.flip()
 
         if not paused:
             draw_board(board)
